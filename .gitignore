@@ -1,0 +1,12 @@
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# 편집기
+.vscode/
+.idea/
+
+# 임시 파일
+*.log
+*.tmp
