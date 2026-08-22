@@ -34,6 +34,10 @@
 
 * { box-sizing: border-box; }
 
+/* display 를 명시한 요소(.cam-placeholder 등)는 브라우저 기본 [hidden] 규칙을
+   덮어써 버리므로, hidden 속성이 항상 이기도록 여기서 못 박는다. */
+[hidden] { display: none !important; }
+
 html, body {
   height: 100%;
 }
@@ -182,12 +186,29 @@ input:focus-visible,
   border-radius: var(--radius-sm);
   overflow: hidden;
 }
-#video { display: none; }
-#cam-canvas { width: 100%; height: 100%; display: block; }
+/* video 는 canvas 로 옮겨 그리므로 보이지 않아야 하지만,
+   display:none 으로 두면 브라우저가 프레임 디코딩을 건너뛸 수 있다.
+   레이아웃에는 남기고 opacity 로만 감춘다. */
+#video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+#cam-canvas {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 
 .cam-placeholder {
   position: absolute;
   inset: 0;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -289,6 +310,8 @@ kbd {
   width: 100%;
   aspect-ratio: 16 / 10;
   min-height: 320px;
+  /* 창이 좁아 세로로 길어질 때 캔버스가 화면 밖으로 넘치지 않도록 제한 */
+  max-height: min(62vh, 620px);
   border-radius: var(--radius-sm);
   overflow: hidden;
   border: 1px solid var(--line);
